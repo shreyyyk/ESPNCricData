@@ -29,12 +29,24 @@ def get_matches(team1, team2):
                 try:
                     team1_name = row.find('td', class_='ds-min-w-max').text
                     team2_name = row.find('td', class_='ds-min-w-max ds-text-right').text
-                    if team1_name in need and team2_name in need:
+
+                    # Add all matches if no specific team is provided
+                    if not team1 and not team2:
                         links = row.find_all('a')
-                        all_matches.append(links[1]['href'])
+                        if len(links) > 1: 
+                            all_matches.append(links[1]['href'])
+                    elif team1_name in need and team2_name in need:
+                        links = row.find_all('a')
+                        if len(links) > 1: 
+                            all_matches.append(links[1]['href'])
+                    elif team1_name in need or team2_name in need:
+                        links=row.find_all('a')
+                        if len(links) > 1:
+                            all_matches.append(links[1]['href'])
                 except AttributeError:
-                    # Skip rows with missing data
                     continue
+
+
         except requests.RequestException as e:
             print(f"Skipping URL {full_url} due to error: {e}")
 
